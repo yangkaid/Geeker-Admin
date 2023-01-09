@@ -15,8 +15,21 @@ import importToCDN from "vite-plugin-cdn-import";
 // import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 
 // @see: https://vitejs.dev/config/
+// defineConfig 的入参是一个函数，函数的入参是一个 ConfigEnv 对象，该对象包含了 mode、command、root 等属性，其中 mode 是当前的环境变量，command 是当前的命令，root 是项目的根目录。
 export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
+	// loadEnv 加载环境变量，mode 是当前的环境变量，root 是项目的根目录，第三个参数表示环境变量的前缀，默认VITE_。
 	const env = loadEnv(mode, process.cwd());
+/* 	env {
+		VITE_GLOB_APP_TITLE: 'Geeker-Admin',
+		VITE_PORT: '3301',
+		VITE_OPEN: 'true',
+		VITE_REPORT: 'false',
+		VITE_BUILD_GZIP: 'false',
+		VITE_DROP_CONSOLE: 'true',
+		VITE_API_URL: '/api',
+		VITE_USER_NODE_ENV: 'development'
+	} */
+	// console.log("env", env);
 	const viteEnv = wrapperEnv(env);
 
 	return {
@@ -74,13 +87,13 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 			viteEnv.VITE_REPORT && visualizer(),
 			// * gzip compress
 			viteEnv.VITE_BUILD_GZIP &&
-				viteCompression({
-					verbose: true,
-					disable: false,
-					threshold: 10240,
-					algorithm: "gzip",
-					ext: ".gz"
-				}),
+			viteCompression({
+				verbose: true,
+				disable: false,
+				threshold: 10240,
+				algorithm: "gzip",
+				ext: ".gz"
+			}),
 			// * cdn 引入（vue按需引入会导致依赖vue的插件出现问题(列如:pinia/vuex)）
 			importToCDN({
 				modules: [
